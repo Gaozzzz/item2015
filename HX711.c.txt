@@ -1,16 +1,43 @@
-#ifndef __HX711_H__
-#define __HX711_H__
+#include "HX711.h"
 
 
-#include <reg52.h>
-#include <intrins.h>
+//****************************************************
+//寤舵椂鍑芥暟
+//****************************************************
+void Delay__hx711_us(void)
+{
+	_nop_();
+	_nop_();
+}
 
-//IO设置
-sbit HX711_DOUT=P2^5; 
-sbit HX711_SCK=P2^6; 
+//****************************************************
+//璇诲彇HX711
+//****************************************************
+unsigned long HX711_Read(void)	//澧炵泭128
+{
+	unsigned long count; 
+	unsigned char i; 
+  	HX711_DOUT=1; 
+	Delay__hx711_us();
+  	HX711_SCK=0; 
+  	count=0; 
+  	while(HX711_DOUT); 
+  	for(i=0;i<24;i++)
+	{ 
+	  	HX711_SCK=1; 
+	  	count=count<<1; 
+		HX711_SCK=0; 
+	  	if(HX711_DOUT)
+			count++; 
+	} 
+ 	HX711_SCK=1; 
+	Delay__hx711_us();
+	HX711_SCK=0;  
+	return(count);
+}
 
-//函数或者变量声明
-extern void Delay__hx711_us(void);
-extern unsigned long HX711_Read(void);
 
-#endif
+
+
+
+
